@@ -35,7 +35,7 @@ export default function Rail({
   }
   return (
     <aside className="rail">
-      <section className="help-card">
+      <section className="help-card" id="cei-help" tabIndex={-1}>
         <div className="rail-title">
           <span className="help-icon">
             <Sparkles size={18} />

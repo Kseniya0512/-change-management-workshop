@@ -194,7 +194,7 @@ export default function Welcome({
         </section>
       </main>
       <footer>
-        <span>СМЕНА · ФРЕЙМВОРК ВНЕДРЕНИЯ ИЗМЕНЕНИЙ</span>
+        <span>РТК ИТ · ПРАКТИКА УПРАВЛЕНИЯ ИЗМЕНЕНИЯМИ</span>
         <span>Люди. Диалог. Новое поведение.</span>
       </footer>
     </div>

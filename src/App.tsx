@@ -27,6 +27,7 @@ import { Brand, Timer, finished } from "./room-ui";
 import Welcome from "./Welcome";
 import Dashboard from "./HostDashboard";
 import Rail from "./TeamRail";
+import { ProductHeader, ProductFooter } from "./ProductFrame";
 interface Draft {
   value: Answer;
   version: number;
@@ -269,374 +270,388 @@ export default function App() {
   const errors = Object.entries(draftState).filter(([, d]) => d.error);
   return (
     <div className="shell">
-      <aside className="sidebar">
-        <Brand />
-        <div className="sidebar-label">ВАШ ВОРКШОП</div>
-        <div className="sidebar-case">
-          <span className="case-symbol">
-            <MessageCircle size={20} />
-          </span>
-          <strong>
-            Один мессенджер —<br />
-            одна компания
-          </strong>
-        </div>
-        {s.me.role === "host" && (
-          <button
-            className={"nav-host " + (!team ? "active" : "")}
-            onClick={() => {
-              setSelectedTeam(null);
-              setView(null);
-            }}
-          >
-            <LayoutDashboard size={18} />
-            Обзор команд
-          </button>
-        )}
-        {team ? (
-          <>
-            <div className="team-switch">
-              <span className="online-dot" />
-              {team.name}
-              <span>{roleLabels[s.me.role]}</span>
-            </div>
-            <nav aria-label="Задания воркшопа">
-              {stages.map((st, i) => {
-                const complete =
-                  i < 8 && evaluateStage(i, team.answers).complete;
-                return (
-                  <button
-                    className={
-                      "nav-item " +
-                      (stage === i ? "active" : "") +
-                      (complete ? " complete" : "")
-                    }
-                    key={st.short}
-                    aria-label={
-                      i === 0
-                        ? "Вводная"
-                        : i === 8
-                          ? "Итоговый план"
-                          : `${i} ${st.short}`
-                    }
-                    onClick={() => void navigate(i)}
-                  >
-                    <span className="nav-index">
-                      {complete ? (
-                        <Check size={13} />
-                      ) : i === 0 ? (
-                        <Play size={12} />
-                      ) : i === 8 ? (
-                        <Flag size={13} />
-                      ) : (
-                        i
-                      )}
-                    </span>
-                    <span>{st.short}</span>
-                    {stage === i && <ChevronRight size={15} />}
-                  </button>
-                );
-              })}
-            </nav>
-            <div className="sidebar-progress">
-              <div>
-                <span>Ваш прогресс</span>
-                <strong>{progress}/7</strong>
-              </div>
-              <div className="progress-track">
-                <span style={{ width: `${(progress / 7) * 100}%` }} />
-              </div>
-              <p>Каждый шаг — часть вашего плана</p>
-            </div>
-          </>
-        ) : (
-          <div className="sidebar-host-note">
-            <Sparkles size={22} />
-            <h3>Меняем привычки вместе</h3>
-            <p>
-              Помогайте командам искать свои решения. Здесь нет рейтинга или
-              гонки на скорость.
-            </p>
-          </div>
-        )}
-        <div className="sidebar-bottom">
-          <span className="avatar small-avatar">{s.me.name[0]}</span>
-          <div>
-            <strong>{s.me.name}</strong>
-            <small>{roleLabels[s.me.role]}</small>
-          </div>
-          <button
-            className="icon-btn"
-            onClick={() => void logout()}
-            aria-label="Выйти"
-          >
-            <LogOut size={17} />
-          </button>
-        </div>
-      </aside>
-      <div className="workspace">
-        <header className="topbar">
-          <div className="breadcrumb">
-            <span>Воркшоп</span>
-            <ChevronRight size={14} />
-            <strong>{team ? team.name : "Пульт ведущего"}</strong>
-          </div>
-          <div className="topbar-right">
-            <span className={"connection " + (online ? "" : "offline")}>
-              {online ? <Wifi size={14} /> : <WifiOff size={14} />}
-              <span>
-                {online ? "Синхронизация включена" : "Восстанавливаем связь"}
-              </span>
+      <ProductHeader
+        activePlan={!!team && stage === 8}
+        gameLabel={s.me.role === "host" ? "Команды" : "Игра"}
+        canHelp={!!team}
+        onGame={() => {
+          if (s.me.role === "host") {
+            setSelectedTeam(null);
+            setView(null);
+          } else void navigate(0);
+        }}
+        onPlan={team ? () => void navigate(8) : undefined}
+      />
+      <div className="shell-body">
+        <aside className="sidebar">
+          <div className="sidebar-label">ВАШ ВОРКШОП</div>
+          <div className="sidebar-case">
+            <span className="case-symbol">
+              <MessageCircle size={20} />
             </span>
-            <Timer s={s} />
+            <strong>
+              Один мессенджер —<br />
+              одна компания
+            </strong>
           </div>
-        </header>
-        {toast && (
-          <div className="toast" role="alert">
-            {toast}
+          {s.me.role === "host" && (
             <button
-              aria-label="Закрыть уведомление"
-              onClick={() => setToast("")}
+              className={"nav-host " + (!team ? "active" : "")}
+              onClick={() => {
+                setSelectedTeam(null);
+                setView(null);
+              }}
             >
-              <X size={17} />
+              <LayoutDashboard size={18} />
+              Обзор команд
+            </button>
+          )}
+          {team ? (
+            <>
+              <div className="team-switch">
+                <span className="online-dot" />
+                {team.name}
+                <span>{roleLabels[s.me.role]}</span>
+              </div>
+              <nav aria-label="Задания воркшопа">
+                {stages.map((st, i) => {
+                  const complete =
+                    i < 8 && evaluateStage(i, team.answers).complete;
+                  return (
+                    <button
+                      className={
+                        "nav-item " +
+                        (stage === i ? "active" : "") +
+                        (complete ? " complete" : "")
+                      }
+                      key={st.short}
+                      aria-label={
+                        i === 0
+                          ? "Вводная"
+                          : i === 8
+                            ? "Итоговый план"
+                            : `${i} ${st.short}`
+                      }
+                      onClick={() => void navigate(i)}
+                    >
+                      <span className="nav-index">
+                        {complete ? (
+                          <Check size={13} />
+                        ) : i === 0 ? (
+                          <Play size={12} />
+                        ) : i === 8 ? (
+                          <Flag size={13} />
+                        ) : (
+                          i
+                        )}
+                      </span>
+                      <span>{st.short}</span>
+                      {stage === i && <ChevronRight size={15} />}
+                    </button>
+                  );
+                })}
+              </nav>
+              <div className="sidebar-progress">
+                <div>
+                  <span>Ваш прогресс</span>
+                  <strong>{progress}/7</strong>
+                </div>
+                <div className="progress-track">
+                  <span style={{ width: `${(progress / 7) * 100}%` }} />
+                </div>
+                <p>Каждый шаг — часть вашего плана</p>
+              </div>
+            </>
+          ) : (
+            <div className="sidebar-host-note">
+              <Sparkles size={22} />
+              <h3>Меняем привычки вместе</h3>
+              <p>
+                Помогайте командам искать свои решения. Здесь нет рейтинга или
+                гонки на скорость.
+              </p>
+            </div>
+          )}
+          <div className="sidebar-bottom">
+            <span className="avatar small-avatar">{s.me.name[0]}</span>
+            <div>
+              <strong>{s.me.name}</strong>
+              <small>{roleLabels[s.me.role]}</small>
+            </div>
+            <button
+              className="icon-btn"
+              onClick={() => void logout()}
+              aria-label="Выйти"
+            >
+              <LogOut size={17} />
             </button>
           </div>
-        )}
-        {s.room.event && team && stage !== 5 && (
-          <div className="event-global">
-            <Sparkles size={17} />
-            <span>
-              Событие: сбои продолжаются, только 45% участников используют
-              мессенджер. Проверьте план Б.
-            </span>
-            <button onClick={() => void navigate(5)}>Обсудить</button>
-          </div>
-        )}
-        {errors.length > 0 && (
-          <section className="unsaved" role="alert">
-            <h3>Есть несохранённые ответы</h3>
-            {errors.map(([key, d]) => (
-              <div key={key}>
-                <p>{d.error}</p>
-                <p>
-                  <b>Ваш вариант:</b>{" "}
-                  {Array.isArray(d.value) ? d.value.join(", ") : d.value}
-                </p>
-                <p>
-                  <b>На сервере:</b>{" "}
-                  {String(team?.answers[key] ?? "Не заполнено")}
-                </p>
-                <button
-                  className="btn secondary small"
-                  onClick={() => {
-                    drafts.current[key].version = team?.versions[key] ?? 0;
-                    delete drafts.current[key].error;
-                    syncDrafts();
-                    void commit(key);
-                  }}
-                >
-                  Сохранить мой вариант
-                </button>
-                <button
-                  className="btn ghost small"
-                  onClick={() => {
-                    delete drafts.current[key];
-                    syncDrafts();
-                  }}
-                >
-                  Принять ответ команды
-                </button>
-              </div>
-            ))}
-          </section>
-        )}
-        {!team ? (
-          <Dashboard
-            s={s}
-            onTeam={(id) => {
-              setSelectedTeam(id);
-              setView(null);
-            }}
-            onAction={(a) => void action(a)}
-          />
-        ) : (
-          <>
-            <div className="team-page">
-              <main className="stage-main">
-                <div className="page-heading">
-                  <div className="heading-meta">
-                    <span className="eyebrow">
-                      {stage === 0
-                        ? "ПЕРЕД СТАРТОМ"
-                        : stage === 8
-                          ? "ОТ ОБСУЖДЕНИЯ — К ДЕЙСТВИЮ"
-                          : `ЗАДАНИЕ ${String(stage).padStart(2, "0")} ИЗ 07`}
-                    </span>
-                    <span className="time-badge">
-                      <Clock size={13} />
-                      {stages[stage].minutes} мин
-                    </span>
-                  </div>
-                  <h1 tabIndex={-1}>{stages[stage].title}</h1>
-                  <p>{stages[stage].description}</p>
-                </div>
-                <div className="save-bar">
-                  <span
-                    className={
-                      "save-status " + (errors.length ? "save-error" : "")
-                    }
-                  >
-                    {saving ? (
-                      <Radio size={14} />
-                    ) : Object.keys(draftState).length ? (
-                      <Clock size={14} />
-                    ) : (
-                      <CheckCircle2 size={14} />
-                    )}{" "}
-                    {saving
-                      ? "Сохраняем на сервере…"
-                      : errors.length
-                        ? "Не сохранено"
-                        : Object.keys(draftState).length
-                          ? "Есть несохранённый текст"
-                          : "Ответы сохранены на сервере"}
-                  </span>
-                  <span>
-                    {editable
-                      ? "Вы фиксируете решения команды"
-                      : "Ответы фиксирует капитан"}
-                  </span>
-                </div>
-                {s.room.status === "finished" && (
-                  <Notice>
-                    Время раунда закончилось. Ответы сохранены; можно продолжить
-                    доработку плана.
-                  </Notice>
-                )}
-                <Form.Provider
-                  value={{
-                    answers,
-                    editable,
-                    checked: !!checked,
-                    set: change,
-                    commit: (key) => void commit(key),
-                  }}
-                >
-                  <Stage
-                    key={stage}
-                    stage={stage}
-                    teamId={team.id}
-                    event={s.room.event}
-                  />
-                </Form.Provider>
-                {checked && stage < 8 && evaluation && (
-                  <section
-                    className={
-                      "validation " +
-                      (evaluation.complete
-                        ? "success"
-                        : evaluation.issues.length
-                          ? "error"
-                          : "warning")
-                    }
-                    aria-live="polite"
-                  >
-                    {evaluation.complete ? (
-                      <>
-                        <h3>
-                          <CheckCircle2 size={20} />
-                          Правила соблюдены
-                        </h3>
-                        <p>
-                          {stage === 2
-                            ? "Переход является масштабным изменением. Используем фреймворк."
-                            : stage === 3
-                              ? "Маршрут и меры зафиксированы. Пилот рекомендуется при неопределённости; аргументированные альтернативы допустимы."
-                              : stage === 4
-                                ? "Чемпион — человек, которому доверяют коллеги и который готов помогать."
-                                : stage === 7
-                                  ? "Измеряем реальное использование и изменение привычного способа работы."
-                                  : "Решение зафиксировано. Вы можете вернуться и дополнить его."}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <h3>
-                          {evaluation.issues.length
-                            ? "Есть что пересмотреть"
-                            : "Добавьте недостающие детали"}
-                        </h3>
-                        {evaluation.issues.map((issue, i) => (
-                          <p key={i}>{issue}</p>
-                        ))}
-                        {evaluation.needs.length > 0 && (
-                          <details>
-                            <summary>
-                              Требует уточнения: {evaluation.needs.length}
-                            </summary>
-                            <ul>
-                              {evaluation.needs.map((need, i) => (
-                                <li key={i}>{need}</li>
-                              ))}
-                            </ul>
-                          </details>
-                        )}
-                      </>
-                    )}
-                  </section>
-                )}
-                <div className="stage-footer">
-                  <button
-                    className="btn ghost"
-                    disabled={stage === 0}
-                    onClick={() => void navigate(stage - 1)}
-                  >
-                    <ArrowLeft size={16} />
-                    Назад
-                  </button>
-                  <div>
-                    {editable && stage < 8 && (
-                      <button
-                        className="btn secondary"
-                        onClick={async () => {
-                          if (!(await flush())) return;
-                          try {
-                            const result = await api<{ snapshot: Snapshot }>(
-                              `/teams/${team.id}/check`,
-                              { stage },
-                            );
-                            update(result.snapshot);
-                          } catch (e) {
-                            setToast((e as Error).message);
-                          }
-                        }}
-                      >
-                        Проверить решение
-                      </button>
-                    )}
-                    {stage < 8 && (
-                      <button
-                        className="btn primary"
-                        onClick={() => void navigate(stage + 1)}
-                      >
-                        {stage === 7
-                          ? "Собрать итоговый план"
-                          : "Следующее задание"}
-                        <ArrowRight size={17} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <p className="stage-footnote">
-                  Сначала обсудите — затем зафиксируйте. К любому решению можно
-                  вернуться.
-                </p>
-              </main>
-              <Rail s={s} team={team} stage={stage} onUpdate={update} />
+        </aside>
+        <div className="workspace">
+          <header className="topbar">
+            <div className="breadcrumb">
+              <span>Воркшоп</span>
+              <ChevronRight size={14} />
+              <strong>{team ? team.name : "Пульт ведущего"}</strong>
             </div>
-          </>
-        )}
+            <div className="topbar-right">
+              <span className={"connection " + (online ? "" : "offline")}>
+                {online ? <Wifi size={14} /> : <WifiOff size={14} />}
+                <span>
+                  {online ? "Синхронизация включена" : "Восстанавливаем связь"}
+                </span>
+              </span>
+              <Timer s={s} />
+            </div>
+          </header>
+          {toast && (
+            <div className="toast" role="alert">
+              {toast}
+              <button
+                aria-label="Закрыть уведомление"
+                onClick={() => setToast("")}
+              >
+                <X size={17} />
+              </button>
+            </div>
+          )}
+          {s.room.event && team && stage !== 5 && (
+            <div className="event-global">
+              <Sparkles size={17} />
+              <span>
+                Событие: сбои продолжаются, только 45% участников используют
+                мессенджер. Проверьте план Б.
+              </span>
+              <button onClick={() => void navigate(5)}>Обсудить</button>
+            </div>
+          )}
+          {errors.length > 0 && (
+            <section className="unsaved" role="alert">
+              <h3>Есть несохранённые ответы</h3>
+              {errors.map(([key, d]) => (
+                <div key={key}>
+                  <p>{d.error}</p>
+                  <p>
+                    <b>Ваш вариант:</b>{" "}
+                    {Array.isArray(d.value) ? d.value.join(", ") : d.value}
+                  </p>
+                  <p>
+                    <b>На сервере:</b>{" "}
+                    {String(team?.answers[key] ?? "Не заполнено")}
+                  </p>
+                  <button
+                    className="btn secondary small"
+                    onClick={() => {
+                      drafts.current[key].version = team?.versions[key] ?? 0;
+                      delete drafts.current[key].error;
+                      syncDrafts();
+                      void commit(key);
+                    }}
+                  >
+                    Сохранить мой вариант
+                  </button>
+                  <button
+                    className="btn ghost small"
+                    onClick={() => {
+                      delete drafts.current[key];
+                      syncDrafts();
+                    }}
+                  >
+                    Принять ответ команды
+                  </button>
+                </div>
+              ))}
+            </section>
+          )}
+          {!team ? (
+            <Dashboard
+              s={s}
+              onTeam={(id) => {
+                setSelectedTeam(id);
+                setView(null);
+              }}
+              onAction={(a) => void action(a)}
+            />
+          ) : (
+            <>
+              <div className="team-page">
+                <main className="stage-main">
+                  <div className="page-heading">
+                    <div className="heading-meta">
+                      <span className="eyebrow">
+                        {stage === 0
+                          ? "ПЕРЕД СТАРТОМ"
+                          : stage === 8
+                            ? "ОТ ОБСУЖДЕНИЯ — К ДЕЙСТВИЮ"
+                            : `ЗАДАНИЕ ${String(stage).padStart(2, "0")} ИЗ 07`}
+                      </span>
+                      <span className="time-badge">
+                        <Clock size={13} />
+                        {stages[stage].minutes} мин
+                      </span>
+                    </div>
+                    <h1 tabIndex={-1}>{stages[stage].title}</h1>
+                    <p>{stages[stage].description}</p>
+                  </div>
+                  <div className="save-bar">
+                    <span
+                      className={
+                        "save-status " + (errors.length ? "save-error" : "")
+                      }
+                    >
+                      {saving ? (
+                        <Radio size={14} />
+                      ) : Object.keys(draftState).length ? (
+                        <Clock size={14} />
+                      ) : (
+                        <CheckCircle2 size={14} />
+                      )}{" "}
+                      {saving
+                        ? "Сохраняем на сервере…"
+                        : errors.length
+                          ? "Не сохранено"
+                          : Object.keys(draftState).length
+                            ? "Есть несохранённый текст"
+                            : "Ответы сохранены на сервере"}
+                    </span>
+                    <span>
+                      {editable
+                        ? "Вы фиксируете решения команды"
+                        : "Ответы фиксирует капитан"}
+                    </span>
+                  </div>
+                  {s.room.status === "finished" && (
+                    <Notice>
+                      Время раунда закончилось. Ответы сохранены; можно
+                      продолжить доработку плана.
+                    </Notice>
+                  )}
+                  <Form.Provider
+                    value={{
+                      answers,
+                      editable,
+                      checked: !!checked,
+                      set: change,
+                      commit: (key) => void commit(key),
+                    }}
+                  >
+                    <Stage
+                      key={stage}
+                      stage={stage}
+                      teamId={team.id}
+                      event={s.room.event}
+                    />
+                  </Form.Provider>
+                  {checked && stage < 8 && evaluation && (
+                    <section
+                      className={
+                        "validation " +
+                        (evaluation.complete
+                          ? "success"
+                          : evaluation.issues.length
+                            ? "error"
+                            : "warning")
+                      }
+                      aria-live="polite"
+                    >
+                      {evaluation.complete ? (
+                        <>
+                          <h3>
+                            <CheckCircle2 size={20} />
+                            Правила соблюдены
+                          </h3>
+                          <p>
+                            {stage === 2
+                              ? "Переход является масштабным изменением. Используем фреймворк."
+                              : stage === 3
+                                ? "Маршрут и меры зафиксированы. Пилот рекомендуется при неопределённости; аргументированные альтернативы допустимы."
+                                : stage === 4
+                                  ? "Чемпион — человек, которому доверяют коллеги и который готов помогать."
+                                  : stage === 7
+                                    ? "Измеряем реальное использование и изменение привычного способа работы."
+                                    : "Решение зафиксировано. Вы можете вернуться и дополнить его."}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h3>
+                            {evaluation.issues.length
+                              ? "Есть что пересмотреть"
+                              : "Добавьте недостающие детали"}
+                          </h3>
+                          {evaluation.issues.map((issue, i) => (
+                            <p key={i}>{issue}</p>
+                          ))}
+                          {evaluation.needs.length > 0 && (
+                            <details>
+                              <summary>
+                                Требует уточнения: {evaluation.needs.length}
+                              </summary>
+                              <ul>
+                                {evaluation.needs.map((need, i) => (
+                                  <li key={i}>{need}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                        </>
+                      )}
+                    </section>
+                  )}
+                  <div className="stage-footer">
+                    <button
+                      className="btn ghost"
+                      disabled={stage === 0}
+                      onClick={() => void navigate(stage - 1)}
+                    >
+                      <ArrowLeft size={16} />
+                      Назад
+                    </button>
+                    <div>
+                      {editable && stage < 8 && (
+                        <button
+                          className="btn secondary"
+                          onClick={async () => {
+                            if (!(await flush())) return;
+                            try {
+                              const result = await api<{ snapshot: Snapshot }>(
+                                `/teams/${team.id}/check`,
+                                { stage },
+                              );
+                              update(result.snapshot);
+                            } catch (e) {
+                              setToast((e as Error).message);
+                            }
+                          }}
+                        >
+                          Проверить решение
+                        </button>
+                      )}
+                      {stage < 8 && (
+                        <button
+                          className="btn primary"
+                          onClick={() => void navigate(stage + 1)}
+                        >
+                          {stage === 7
+                            ? "Собрать итоговый план"
+                            : "Следующее задание"}
+                          <ArrowRight size={17} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <p className="stage-footnote">
+                    Сначала обсудите — затем зафиксируйте. К любому решению
+                    можно вернуться.
+                  </p>
+                </main>
+                <Rail s={s} team={team} stage={stage} onUpdate={update} />
+              </div>
+            </>
+          )}
+        </div>
       </div>
+      <ProductFooter />
     </div>
   );
 }

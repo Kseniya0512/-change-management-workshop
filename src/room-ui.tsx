@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, ArrowUpRight, Clock } from "lucide-react";
+import { MessageSquareText, Clock } from "lucide-react";
 import type { Snapshot, Team } from "../shared/types";
 import { evaluateStage } from "../shared/model";
 export const finished = (team: Team) =>
@@ -11,15 +11,11 @@ export function Brand() {
   return (
     <div className="brand">
       <span className="brand-symbol">
-        <MessageCircle size={23} />
-        <span />
+        <MessageSquareText size={23} />
       </span>
       <div>
-        <strong>
-          смена
-          <ArrowUpRight size={17} />
-        </strong>
-        <small>пространство перемен</small>
+        <strong>РТК ИТ</strong>
+        <small>ЛЮДИ И ИЗМЕНЕНИЯ</small>
       </div>
     </div>
   );

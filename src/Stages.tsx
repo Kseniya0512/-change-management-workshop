@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HeroArt } from "./ProductFrame";
 import {
   ArrowDown,
   ArrowUp,
@@ -34,7 +35,7 @@ function Intro() {
           <h2>
             Один мессенджер.
             <br />
-            Одна компания.
+            <span>Одна компания.</span>
           </h2>
           <p>
             За 30 минут превратите сложный переход в понятный план. Вместе с
@@ -49,32 +50,7 @@ function Intro() {
             </span>
           </div>
         </div>
-        <div className="chat-art" aria-hidden="true">
-          <div className="chat-card chat-back">
-            <span className="avatar violet">А</span>
-            <div>
-              <b>А где обсуждаем проект?</b>
-              <i>В старом чате или новом?</i>
-            </div>
-          </div>
-          <div className="chat-card chat-front">
-            <span className="avatar lime">
-              <MessageCircle size={20} />
-            </span>
-            <div>
-              <b>Всё важное — в одном месте</b>
-              <i>
-                <span className="online-dot" /> Единое пространство команды
-              </i>
-            </div>
-            <span className="chat-check">
-              <Check size={16} />
-            </span>
-          </div>
-          <div className="art-label">
-            <Sparkles size={14} /> Будущее начинается с диалога
-          </div>
-        </div>
+        <HeroArt />
       </div>
       <div className="case-columns">
         <div>
