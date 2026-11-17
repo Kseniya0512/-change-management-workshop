@@ -32,6 +32,7 @@ export function Field({
   const f = useForm();
   const props = {
     id: "f-" + name,
+    "aria-label": label,
     value: text(f.answers, name),
     placeholder,
     disabled: !f.editable,

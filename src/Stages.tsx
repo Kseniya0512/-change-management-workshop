@@ -719,7 +719,13 @@ function Metrics() {
     </>
   );
 }
-export function Plan({ teamId }: { teamId: string }) {
+export function Plan({
+  teamId,
+  onExport,
+}: {
+  teamId: string;
+  onExport?: (format: "md" | "json") => void;
+}) {
   const f = useForm(),
     plan = buildPlan(f.answers);
   return (
@@ -738,18 +744,30 @@ export function Plan({ teamId }: { teamId: string }) {
         </div>
       </div>
       <div className="export-actions">
-        <a className="btn primary" href={`/api/teams/${teamId}/export`}>
-          <Download size={17} /> Скачать Markdown
-        </a>
+        {onExport ? (
+          <button className="btn primary" onClick={() => onExport("md")}>
+            <Download size={17} /> Скачать Markdown
+          </button>
+        ) : (
+          <a className="btn primary" href={`/api/teams/${teamId}/export`}>
+            <Download size={17} /> Скачать Markdown
+          </a>
+        )}
         <button className="btn secondary" onClick={() => window.print()}>
           <Printer size={17} /> Печать / PDF
         </button>
-        <a
-          className="btn ghost"
-          href={`/api/teams/${teamId}/export?format=json`}
-        >
-          Ответы в JSON
-        </a>
+        {onExport ? (
+          <button className="btn ghost" onClick={() => onExport("json")}>
+            Ответы в JSON
+          </button>
+        ) : (
+          <a
+            className="btn ghost"
+            href={`/api/teams/${teamId}/export?format=json`}
+          >
+            Ответы в JSON
+          </a>
+        )}
       </div>
       <Notice>
         Это ваши фактические решения, а не идеальный шаблон. Заполненный раздел
@@ -777,10 +795,12 @@ export default function Stage({
   stage,
   teamId,
   event,
+  onExport,
 }: {
   stage: number;
   teamId: string;
   event: boolean;
+  onExport?: (format: "md" | "json") => void;
 }) {
   switch (stage) {
     case 0:
@@ -800,6 +820,6 @@ export default function Stage({
     case 7:
       return <Metrics />;
     default:
-      return <Plan teamId={teamId} />;
+      return <Plan teamId={teamId} onExport={onExport} />;
   }
 }

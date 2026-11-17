@@ -12,7 +12,9 @@
     "start": "tsx server/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:offline": "tsc --noEmit && tsx scripts/build-offline.ts",
+    "test:offline": "playwright test --config playwright.offline.config.ts"
   },
   "dependencies": {
     "express": "^5.1.0",

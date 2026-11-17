@@ -2961,3 +2961,156 @@ button {
   border-color: #dfc88f;
   color: #a48953;
 }
+.offline-team-picker .field {
+  margin: 16px 9px 13px;
+}
+.offline-team-picker .field > span {
+  color: #9eb1ba;
+  font-size: 10px;
+}
+.offline-team-picker select {
+  background: #25434f;
+  border-color: #395461;
+  color: #d6e0e3;
+  font-size: 11px;
+  padding: 9px;
+}
+.offline-sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  color: #91a8b2;
+  font-size: 10px;
+  padding: 18px 9px;
+  border-top: 1px solid #ffffff13;
+}
+.offline-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 32px;
+  border-bottom: 1px solid #e5e9ec;
+  background: #fff;
+  flex-wrap: wrap;
+}
+.offline-timer-buttons,
+.offline-file-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.offline-file-buttons > label {
+  cursor: pointer;
+}
+.offline-toolbar .btn {
+  font-size: 10px;
+  min-height: 34px;
+}
+.offline-warning,
+.offline-message {
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 12px;
+  background: #fff2d9;
+  color: #9f793e;
+}
+.offline-message {
+  background: #eef5e9;
+  color: #6f8a5d;
+}
+.offline-info-card h3 {
+  font-size: 14px;
+  color: #758967;
+  margin: 12px 0;
+}
+.offline-info-card p {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #8a9a7f;
+}
+.offline-info-card > svg {
+  color: #8b9e7b;
+}
+.offline-info-card {
+  background: #f0f4ea !important;
+}
+.offline-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #102a36a3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  z-index: 50;
+}
+.offline-modal {
+  width: min(530px, 100%);
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 15px 50px #0002;
+}
+.offline-modal h2 {
+  font-size: 23px;
+}
+.offline-modal p {
+  font-size: 13px;
+  color: #7a8e9a;
+  margin: 18px 0;
+}
+.offline-modal > div {
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.offline-modal .btn {
+  font-size: 11px;
+}
+@media (max-width: 760px) {
+  .offline-toolbar {
+    padding: 14px 20px;
+  }
+  .offline-shell .sidebar {
+    padding-bottom: 12px;
+  }
+  .offline-team-picker {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    width: 145px;
+  }
+  .offline-team-picker .field {
+    margin: 0;
+  }
+  .offline-team-picker .field > span {
+    font-size: 8px;
+  }
+  .offline-team-picker select {
+    padding: 6px;
+    font-size: 10px;
+  }
+  .offline-shell .sidebar nav {
+    margin-top: 24px;
+  }
+  .offline-sidebar-footer {
+    display: none;
+  }
+  .offline-warning,
+  .offline-message {
+    padding: 14px 20px;
+  }
+}
+@media print {
+  .offline-toolbar,
+  .offline-warning,
+  .offline-message,
+  .offline-modal-backdrop {
+    display: none !important;
+  }
+}
