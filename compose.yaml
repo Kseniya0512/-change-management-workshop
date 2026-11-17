@@ -1,0 +1,17 @@
+services:
+  workshop:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_PATH: /data/workshop.db
+      # Local HTTP only. For public HTTPS set COOKIE_SECURE=true.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:3000}
+    volumes:
+      - workshop-data:/data
+    restart: unless-stopped
+    stop_grace_period: 15s
+volumes:
+  workshop-data:
